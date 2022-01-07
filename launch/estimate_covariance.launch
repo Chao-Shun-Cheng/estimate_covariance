@@ -1,10 +1,10 @@
 <!-- -->
 <launch>
-  <arg name="distance_threshold" default="3"/>
-  <arg name="RSU_topic_name" default="/lileeRSU/s0/objects"/>
+  <arg name="distance_threshold" default="3" />
+  <arg name="RSU_topic_name" default="/lileeRSU/s0/objects" />
 
   <node pkg="estimate_covariance" type="estimate_covariance" name="RSU_experiment" output="screen">
     <param name="distance_threshold" value="$(arg distance_threshold)" />
-    <param name="RSU_topic_name" value="$(arg RSU_topic_name)" />
+    <remap from="RSU_topic_name_" to="$(arg RSU_topic_name)" />
   </node>
 </launch>
