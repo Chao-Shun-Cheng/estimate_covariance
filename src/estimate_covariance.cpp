@@ -67,7 +67,7 @@ void get_logfilename()
     if (!logfile.is_open()) {
         cerr << "failed to open " << logfile_name_ << '\n';
     } else {
-        logfile << "time, ndt_x, ndt_y, ndt_yaw, rsu_x, rsu_y, rsu_yaw, dim_x, dim_y, dim_z, label\n";  // format
+        logfile << "time,ndt_x,ndt_y,ndt_yaw,rsu_x,rsu_y,rsu_yaw,dim_x,dim_y,dim_z,label\n";  // format
         logfile.close();
     }
     return;
@@ -97,13 +97,13 @@ void RSU_callback(const autoware_msgs::DetectedObjectArray &input)
             if (!logfile.is_open()) {
                 cerr << "failed to open " << logfile_name_ << '\n';
             } else {
-                logfile << to_string(time(0)) << ", ";
-                logfile << to_string(ground_truth.position.x) << ", " << to_string(ground_truth.position.y) << ", "
-                        << to_string(tf::getYaw(ground_truth.orientation)) << ", ";
-                logfile << to_string(out_pose.position.x) << ", " << to_string(out_pose.position.y) << ", "
-                        << to_string(tf::getYaw(out_pose.orientation)) << ", ";
-                logfile << to_string(input.objects[i].dimensions.x) << ", " << to_string(input.objects[i].dimensions.y) << ", "
-                        << to_string(input.objects[i].dimensions.z) << ", ";
+                logfile << to_string(time(0)) << ",";
+                logfile << to_string(ground_truth.position.x) << "," << to_string(ground_truth.position.y) << ","
+                        << to_string(tf::getYaw(ground_truth.orientation)) << ",";
+                logfile << to_string(out_pose.position.x) << "," << to_string(out_pose.position.y) << ","
+                        << to_string(tf::getYaw(out_pose.orientation)) << ",";
+                logfile << to_string(input.objects[i].dimensions.x) << "," << to_string(input.objects[i].dimensions.y) << ","
+                        << to_string(input.objects[i].dimensions.z) << ",";
                 logfile << input.objects[i].label << endl;
                 logfile.close();
             }
