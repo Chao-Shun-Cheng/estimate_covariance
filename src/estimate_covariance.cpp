@@ -16,7 +16,7 @@ geometry_msgs::Pose ground_truth;
 double distance_threshold_;
 ofstream logfile;
 string logfile_name_;
-
+string save_path_;
 /*
 This function can transform pose from local frame to map frame.
 */
@@ -63,8 +63,7 @@ void get_logfilename()
     logfile_name_ += (1 + ltm->tm_hour) / 10 ? to_string(1 + ltm->tm_hour) : ("0" + to_string(1 + ltm->tm_hour));  // hour
     logfile_name_ += (1 + ltm->tm_min) / 10 ? to_string(1 + ltm->tm_min) : ("0" + to_string(1 + ltm->tm_min));     // minute
     logfile_name_ += ".csv";
-    logfile.open("/home/kenny/catkin_ws/src/track_to_track_fusion/estimate_covariance/RSU/lilee/2022/" + logfile_name_,
-                 std::ofstream::out | std::ios_base::out);
+    logfile.open(save_path_ + logfile_name_, std::ofstream::out | std::ios_base::out);
     if (!logfile.is_open()) {
         cerr << "failed to open " << logfile_name_ << '\n';
     } else {
@@ -94,8 +93,7 @@ void RSU_callback(const autoware_msgs::DetectedObjectArray &input)
         double distance = pow((ground_truth.position.x - out_pose.position.x), 2) + pow((ground_truth.position.y - out_pose.position.y), 2);
         distance = pow(distance, 0.5);
         if (distance < distance_threshold_) {  // write data into file
-            logfile.open("/home/kenny/catkin_ws/src/track_to_track_fusion/estimate_covariance/RSU/lilee/2022/" + logfile_name_,
-                         std::ofstream::out | std::ios_base::out);
+            logfile.open(save_path_ + logfile_name_, std::ofstream::out | std::ios_base::out);
             if (!logfile.is_open()) {
                 cerr << "failed to open " << logfile_name_ << '\n';
             } else {
@@ -120,7 +118,9 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
     ros::NodeHandle private_nh_("~");
     private_nh_.param<double>("distance_threshold", distance_threshold_, 3);
+    private_nh_.param<std::string>("save_path", save_path_, "/");
     cout << "Receive param, distance_threshold : " << distance_threshold_ << endl;
+    cout << "save path : " << save_path_ << endl;
 
     ros::Subscriber sub1 = n.subscribe("/ndt_pose", 1, ndt_callback);
     ros::Subscriber sub2 = n.subscribe("RSU_topic_name_", 1, RSU_callback);
