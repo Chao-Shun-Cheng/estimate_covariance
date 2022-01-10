@@ -20,4 +20,5 @@ This package make MKZ ndt pose regarded as ground truth, and receive the data fr
 ### Parameter 
 * ***distance_threshold*** : this parameter is to choose which object is MKZ.
 * ***RSU_topic_name*** : this parameter is subscribed by this package. 
+* ***save_path*** : raw data are saved in this path. **Notice** the path needs to create before you start to run.
 

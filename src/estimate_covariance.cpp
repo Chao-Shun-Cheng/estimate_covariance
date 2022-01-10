@@ -63,7 +63,8 @@ void get_logfilename()
     logfile_name_ += (1 + ltm->tm_hour) / 10 ? to_string(1 + ltm->tm_hour) : ("0" + to_string(1 + ltm->tm_hour));  // hour
     logfile_name_ += (1 + ltm->tm_min) / 10 ? to_string(1 + ltm->tm_min) : ("0" + to_string(1 + ltm->tm_min));     // minute
     logfile_name_ += ".csv";
-    logfile.open("/home/kenny/Documents/RSU/Experiment/2022/" + logfile_name_, std::ofstream::out | std::ios_base::out);
+    logfile.open("/home/kenny/catkin_ws/src/track_to_track_fusion/estimate_covariance/RSU/lilee/2022/" + logfile_name_,
+                 std::ofstream::out | std::ios_base::out);
     if (!logfile.is_open()) {
         cerr << "failed to open " << logfile_name_ << '\n';
     } else {
@@ -93,11 +94,12 @@ void RSU_callback(const autoware_msgs::DetectedObjectArray &input)
         double distance = pow((ground_truth.position.x - out_pose.position.x), 2) + pow((ground_truth.position.y - out_pose.position.y), 2);
         distance = pow(distance, 0.5);
         if (distance < distance_threshold_) {  // write data into file
-            logfile.open("/home/kenny/Documents/RSU/Experiment/2022/" + logfile_name_, std::ofstream::out | std::ios_base::out);
+            logfile.open("/home/kenny/catkin_ws/src/track_to_track_fusion/estimate_covariance/RSU/lilee/2022/" + logfile_name_,
+                         std::ofstream::out | std::ios_base::out);
             if (!logfile.is_open()) {
                 cerr << "failed to open " << logfile_name_ << '\n';
             } else {
-                logfile << to_string(time(0)) << ",";
+                logfile << to_string(input.header.stamp.toSec()) << ",";
                 logfile << to_string(ground_truth.position.x) << "," << to_string(ground_truth.position.y) << ","
                         << to_string(tf::getYaw(ground_truth.orientation)) << ",";
                 logfile << to_string(out_pose.position.x) << "," << to_string(out_pose.position.y) << ","

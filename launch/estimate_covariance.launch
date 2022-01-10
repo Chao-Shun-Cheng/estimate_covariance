@@ -2,9 +2,11 @@
 <launch>
   <arg name="distance_threshold" default="3" />
   <arg name="RSU_topic_name" default="/lileeRSU/s0/objects" />
+  <arg name="save_path" default="/home/kenny/catkin_ws/src/track_to_track_fusion/estimate_covariance/RSU/lilee/2022/" />
 
   <node pkg="estimate_covariance" type="estimate_covariance" name="RSU_experiment" output="screen">
     <param name="distance_threshold" value="$(arg distance_threshold)" />
     <remap from="RSU_topic_name_" to="$(arg RSU_topic_name)" />
+    <remap from="/home/kenny/catkin_ws/src/track_to_track_fusion/estimate_covariance/RSU/lilee/2022/" to="$(arg save_path)" />
   </node>
 </launch>
