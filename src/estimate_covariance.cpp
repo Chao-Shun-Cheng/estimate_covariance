@@ -64,7 +64,7 @@ void get_logfilename()
     logfile_name_ += (1 + ltm->tm_hour) / 10 ? to_string(1 + ltm->tm_hour) : ("0" + to_string(1 + ltm->tm_hour));  // hour
     logfile_name_ += (1 + ltm->tm_min) / 10 ? to_string(1 + ltm->tm_min) : ("0" + to_string(1 + ltm->tm_min));     // minute
     logfile_name_ += ".csv";
-    logfile.open(save_path_ + logfile_name_, std::ofstream::out | std::ios_base::out);
+    logfile.open(save_path_ + logfile_name_, std::ofstream::out | std::ofstream::app);
     if (!logfile.is_open()) {
         cerr << "failed to open " << logfile_name_ << '\n';
     } else {
@@ -96,7 +96,7 @@ void RSU_callback(const autoware_msgs::DetectedObjectArray &input)
         double distance = pow((ground_truth.position.x - out_pose.position.x), 2) + pow((ground_truth.position.y - out_pose.position.y), 2);
         distance = pow(distance, 0.5);
         if (distance < distance_threshold_) {  // write data into file
-            logfile.open(save_path_ + logfile_name_, std::ofstream::out | std::ios_base::out);
+            logfile.open(save_path_ + logfile_name_, std::ofstream::out | std::ofstream::app);
             if (!logfile.is_open()) {
                 cerr << "failed to open " << logfile_name_ << '\n';
             } else {
