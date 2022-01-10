@@ -12,6 +12,7 @@
 using namespace std;
 
 tf::StampedTransform rsu2map;
+tf::StampedTransform base2map;
 geometry_msgs::Pose ground_truth;
 double distance_threshold_;
 ofstream logfile;
@@ -35,13 +36,13 @@ geometry_msgs::Pose getTransformedPose(const geometry_msgs::Pose &in_pose, const
 This function can find the transformation matrix from local frame to map frame.
 local2global_ will save the matrix including translation and rotation.
 */
-bool updateNecessaryTransform(const autoware_msgs::DetectedObjectArray &input, tf::StampedTransform &local2global_)
+bool updateNecessaryTransform(const string &input, tf::StampedTransform &local2global_)
 {
     bool success = true;
     tf::TransformListener tf_listener_;
     try {
-        tf_listener_.waitForTransform(input.header.frame_id, "map", ros::Time(0), ros::Duration(1.0));
-        tf_listener_.lookupTransform("map", input.header.frame_id, ros::Time(0), local2global_);
+        tf_listener_.waitForTransform(input, "map", ros::Time(0), ros::Duration(1.0));
+        tf_listener_.lookupTransform("map", input, ros::Time(0), local2global_);
     } catch (tf::TransformException ex)  // check TF
     {
         ROS_ERROR("%s", ex.what());
@@ -77,13 +78,15 @@ void ndt_callback(const geometry_msgs::PoseStamped &input)
 {
     cout << "Receive ground truth pose." << endl;
     ground_truth = input.pose;
+    ground_truth.position.x += 1.06 * cos(tf::getYaw(ground_truth.orientation));
+    ground_truth.position.y += 1.06 * sin(tf::getYaw(ground_truth.orientation));
     return;
 }
 
 void RSU_callback(const autoware_msgs::DetectedObjectArray &input)
 {
     cout << "Receive RSU data." << endl;
-    bool success = updateNecessaryTransform(input, rsu2map);
+    bool success = updateNecessaryTransform(input.header.frame_id, rsu2map);
     if (!success) {
         ROS_INFO("Could not find coordiante transformation from RSU to map");
         return;
